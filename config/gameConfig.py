@@ -1,0 +1,3 @@
+GAME_CAPTION = "TankGame"
+RESOLUTION = (1024,640)
+FPS = 60
