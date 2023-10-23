@@ -1,4 +1,4 @@
-from gameBase import GameBase
+from game.gameBase import GameBase
 from agent.unit import Unit
 from layer.agentLayer import AgentLayer
 from animation.animation import Animation
@@ -31,33 +31,31 @@ class Game(GameBase):
 
     def processInput(self):
         target_position = Vector2(pygame.mouse.get_pos())
-        self.user_interface.update_agle(target_position)
-        # res = target_position - self.tank.get_screen_position()
-        # self.angle = math.atan2(-res.x, -res.y) * 180 / math.pi
+        user_move = Vector2((0, 0))
+        agent_fire = False
         for event in pygame.event.get():
-            # only do something if the event is of type QUIT
             if event.type == pygame.QUIT:
                 # change the value to False, to exit the main loop
-                self.__running = False
+                self.set_running_flag(False)
                 pygame.quit()
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    print("按了")
-                    self.user_interface.agent_fire = True
-            #     if event.key == pygame.K_a:
-            #         self.user_move.x -= self.step_displacement
-            #     elif event.key == pygame.K_d:
-            #         self.user_move.x += self.step_displacement
-            #         pass
-            #     elif event.key == pygame.K_s:
-            #         self.user_move.y += self.step_displacement
-            #     elif event.key == pygame.K_w:
-            #         self.user_move.y -= self.step_displacement
+                    agent_fire = True
+                if event.key == pygame.K_a:
+                    user_move.x -= self.step_displacement
+                elif event.key == pygame.K_d:
+                    user_move.x += self.step_displacement
+                elif event.key == pygame.K_s:
+                    user_move.y += self.step_displacement
+                elif event.key == pygame.K_w:
+                    user_move.y -= self.step_displacement
+        self.user_interface.update(target_position,user_move,agent_fire)
 
     def update(self):
         # self.tank.update(self.user_move, self.angle, agent.DIRECTION.DOWN)
         # self.user_move = Vector2((0, 0))
+        # to do refactor the class
         self.agent.update(self.user_interface.user_target, self.user_interface.user_movement,
                           DIRECTION.DOWN,self.user_interface.agent_fire)
         pass

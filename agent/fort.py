@@ -18,4 +18,3 @@ class Fort(Agent):
     def _get_rotate_angle(self, user_target):
         diff = user_target - self.agent_position.elementwise()*(64,64)
         self.angle = atan2(-diff.x, -diff.y) * 180 / pi
-        print(self.angle)

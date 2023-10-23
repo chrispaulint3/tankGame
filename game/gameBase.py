@@ -15,6 +15,9 @@ class GameBase:
         self._clock = Clock()
         self._fps = FPS
 
+    def set_running_flag(self,flag:bool):
+        self._running = bool
+
     @abstractmethod
     def processInput(self):
         pass
