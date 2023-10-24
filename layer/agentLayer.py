@@ -19,9 +19,7 @@ class AgentLayer(Layer):
         self.explosion = explosion
         pass
 
-    def render(self, surface: Surface, on_fire: bool):
-        if on_fire:
-            self.explosion.reset()
+    def render(self, surface: Surface):
         self.__render_tank_body(surface, self.agent.tank.agent_position)
         self.__render_rotation(surface, self.agent.fort.agent_position)
 
@@ -37,19 +35,18 @@ class AgentLayer(Layer):
         x_shift = rotated_fort_surface.get_width() // 2 - fort_surface.get_width() // 2
         y_shift = rotated_fort_surface.get_height() // 2 - fort_surface.get_height() // 2
 
-        sprite_position = sprite_position.elementwise() * self.tile_size
         sprite_position = sprite_position - Vector2((x_shift, y_shift))
         surface.blit(rotated_fort_surface, sprite_position)
 
-        self.explosion.render(surface, sprite_position, angle)
+        self.explosion.render(surface, sprite_position, angle,self.agent.fort.on_fire)
 
     def __render_tank_body(self, surface, sprite_position):
         # 绘制坦克基座
         texture_point = self.tank_sprite_pos.elementwise() * self.tile_size
         rect = Rect(texture_point, self.tile_size)
-        sprite_position = sprite_position.elementwise() * self.tile_size
+        sprite_position = sprite_position
         surface.blit(self.texture, sprite_position, rect)
 
     def get_rotation(self):
-        diff = self.agent.fort.target_position - self.agent.fort.agent_position.elementwise() * self.tile_size
+        diff = self.agent.fort.target_position - self.agent.fort.agent_position
         return atan2(-diff.x, -diff.y) * 180 / pi

@@ -4,10 +4,12 @@ from pygame import Surface
 from pygame.display import flip
 from layer.layerBase import Layer
 from pygame.transform import rotate
+from collections import deque
 
 
 class Animation(Layer):
-    def __init__(self, asset_path, tile_size, frame_row, frame_start, frame_end, duration):
+    def __init__(self, asset_path: str, tile_size: tuple,
+                 frame_row: int, frame_start: int, frame_end: int, duration):
         """
         :param asset_path: image path to get the surface
         :param frame_position: the frame texture start rect position
@@ -21,8 +23,9 @@ class Animation(Layer):
         self.frames = self.extract_surface()
         self.rotated_frames = []
         self.current_frame = 0
-        self.animation_on = False
+        self.animation_complete = False
         self.angle = 0
+        self.task_queue = None
 
     def extract_surface(self):
         frame_surface = []
@@ -34,22 +37,22 @@ class Animation(Layer):
             frame_point.x += 1
         return frame_surface
 
-    def render(self, surface: Surface, sprite_position: Vector2,angle:float):
-        if not self.animation_on:
+    def render(self, surface: Surface, sprite_position: Vector2, angle: float,task_queue:deque):
+        if not task_queue:
             return
         elif self.frame_elapse < self.duration:
             self.frame_elapse += 1
             return
 
         elif self.current_frame >= len(self.frames):
-            self.animation_on = False
+            task_queue.popleft()
             self.current_frame = 0
-            print("播放玩了")
             return
 
         frames = self.rotate_frame(angle)
 
         surface.blit(frames[self.current_frame], sprite_position)
+        print("播放了")
         self.current_frame += 1
         self.frame_elapse = 0
 
@@ -64,4 +67,5 @@ class Animation(Layer):
         return self.rotated_frames
 
     def reset(self):
-        self.animation_on = True
+        # self.animation_complete = True
+        pass

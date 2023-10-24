@@ -8,5 +8,10 @@ class A:
     def __init__(self):
         self._a = 1
 
+    @property
+    def get_a(self):
+        return self._a
+
 a = A()
-print()
+a.get_a = 2
+print(a.get_a)
